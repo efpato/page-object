@@ -3,6 +3,11 @@ Page Objects for Python
 
 Selenium Page Objects for Python.
 
+#Installation
+```bash
+$ python setup.py install
+```
+
 #Quick Example
 
 ```python
@@ -32,7 +37,7 @@ driver = Firefox()
 driver.maximize_window()
  
 page = LoginPage(driver, 'http://localhost:8000')
-page.get('/admin')
+page.get('/login')
 page = page.logIn('user', 'passwd')
 assert "My site" in page.title, 'Fail login'
 
