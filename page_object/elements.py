@@ -43,6 +43,9 @@ class ClickableElement(BaseElement):
 class Checkbox(CheckableElement): pass
 
 
+class RadioButton(CheckableElement): pass
+
+
 class Button(ClickableElement): pass
 
 
