@@ -1,3 +1,6 @@
 *.pyc
 .idea
 .DS_Store
+build/
+dist/
+page_object.egg-info/

@@ -40,15 +40,13 @@ class PageElement(object):
 
     TIMEOUT = 10
 
-    def __init__(self, cached=False, **locator):
-        self._cached = cached
+    def __init__(self, **locator):
         if not locator:
             raise ValueError("Please specify a locator")
         if len(locator) > 1:
             raise ValueError("Please specify only one locator")
         key, value = next(iter(locator.items()))
         self._locator = (LOCATOR_MAP[key], value)
-        self._element = None
 
     def find(self, webdriver):
         return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
@@ -57,12 +55,9 @@ class PageElement(object):
 
     def __get__(self, instance, owner):
         try:
-            driver = instance.webdriver
+            return self.find(instance.webdriver)
         except AttributeError:
             return
-        if (self._element is None) or (self._element is not None and not self._cached):
-            self._element = self.find(driver)
-        return self
 
     def __set__(self, instance, value):
         raise NotImplemented()

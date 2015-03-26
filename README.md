@@ -18,7 +18,7 @@ from page_object.elements import Link, Button, Textbox
  
 
 class HomePage(PageObject):
-    news = Link(link_text="news", cached=True)
+    news = Link(link_text="news")
 
 
 class LoginPage(PageObject):
