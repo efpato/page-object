@@ -25,16 +25,18 @@ class Link(PageElement): pass
 
 class Select(PageElement):
     def __set__(self, instance, value):
-        value = str(value)
-        if len(value) > 0:
-            element = self.__get__(instance, instance.__class__)
-            for option in element.find_elements_by_tag_name('option'):
-                if value in option.text:
-                    option.click()
+        if value is not None:
+            value = str(value)
+            if len(value) > 0:
+                element = self.__get__(instance, instance.__class__)
+                for option in element.find_elements_by_tag_name('option'):
+                    if value == option.text:
+                        option.click()
 
 
 class Textbox(PageElement):
     def __set__(self, instance, value):
-        value = str(value)
-        if len(value) > 0:
-            self.__get__(instance, instance.__class__).send_keys(value)
+        if value is not None:
+            value = str(value)
+            if len(value) > 0:
+                self.__get__(instance, instance.__class__).send_keys(value)
