@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import os
-import time
-
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait, TimeoutException
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 LOCATOR_MAP = {
@@ -17,9 +14,6 @@ LOCATOR_MAP = {
     'tag': By.TAG_NAME,
     'xpath': By.XPATH
 }
-
-SCREENSHOTS_DIR = 'screenshots'
-
 
 class PageObject(object):
     """Page Object pattern."""
@@ -54,17 +48,9 @@ class PageElement(object):
         self._locator = (LOCATOR_MAP[key], value)
 
     def find(self, webdriver):
-        try:
-            return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
-                lambda d: d.find_element(*self._locator),
-                'Didn\'t find element by %s="%s".' % self._locator)
-        except TimeoutException as e:
-            if not os.path.exists(SCREENSHOTS_DIR):
-                os.mkdir(SCREENSHOTS_DIR)
-            png = '%s/%s.png' % (SCREENSHOTS_DIR, time.time())
-            webdriver.save_screenshot(png)
-            e.msg += ' See %s' % png
-            raise e
+        return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
+            lambda d: d.find_element(*self._locator),
+            'Didn\'t find element by %s="%s".' % self._locator)
 
     def __get__(self, instance, owner):
         try:
@@ -80,14 +66,6 @@ class PageElements(PageElement):
     """Like `PageElement` but returns multiple results."""
 
     def find(self, webdriver):
-        try:
-            return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
-                lambda d: d.find_elements(*self._locator),
-                'Didn\'t find elements by %s="%s".' % self._locator)
-        except TimeoutException as e:
-            if not os.path.exists(SCREENSHOTS_DIR):
-                os.mkdir(SCREENSHOTS_DIR)
-            png = '%s/%s.png' % (SCREENSHOTS_DIR, time.time())
-            webdriver.save_screenshot(png)
-            e.msg += ' See %s' % png
-            raise e
+        return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
+            lambda d: d.find_elements(*self._locator),
+            'Didn\'t find elements by %s="%s".' % self._locator)
