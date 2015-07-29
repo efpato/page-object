@@ -15,6 +15,7 @@ LOCATOR_MAP = {
     'xpath': By.XPATH
 }
 
+
 class PageObject(object):
     """Page Object pattern."""
 

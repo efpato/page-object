@@ -1,6 +1,6 @@
 # -*- coding: -utf-8 -*-
 
-from page_object import PageElement
+from page_object import PageElement, PageElementError
 
 
 class CheckableElement(PageElement):
@@ -32,6 +32,8 @@ class Select(PageElement):
                 for option in element.find_elements_by_tag_name('option'):
                     if value == option.text:
                         option.click()
+                        return
+                raise PageElementError("Didn\'t find option by text='%s'." % value)
 
 
 class Textbox(PageElement):
