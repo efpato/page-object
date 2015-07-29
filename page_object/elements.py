@@ -1,6 +1,8 @@
 # -*- coding: -utf-8 -*-
 
-from page_object import PageElement, PageElementError
+from page_object import PageElement
+
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 class CheckableElement(PageElement):
@@ -28,12 +30,9 @@ class Select(PageElement):
         if value is not None:
             value = str(value)
             if len(value) > 0:
-                element = self.__get__(instance, instance.__class__)
-                for option in element.find_elements_by_tag_name('option'):
-                    if value == option.text:
-                        option.click()
-                        return
-                raise PageElementError("Didn\'t find option by text='%s'." % value)
+                WebDriverWait(instance.webdriver, self.TIMEOUT).until(
+                    lambda d: self.find(d).find_element_by_xpath("./option[text()='%s']" % value),
+                    "Didn\'t find option by text='%s'." % value).click()
 
 
 class Textbox(PageElement):
