@@ -1,8 +1,6 @@
 # -*- coding: -utf-8 -*-
 
-from page_object import PageElement
-
-from selenium.webdriver.support.wait import WebDriverWait
+from page_object import PageElement, PageElementError
 
 
 class CheckableElement(PageElement):
@@ -13,16 +11,20 @@ class CheckableElement(PageElement):
                 element.click()
 
 
-class Checkbox(CheckableElement): pass
+class Checkbox(CheckableElement):
+    pass
 
 
-class Radio(CheckableElement): pass
+class Radio(CheckableElement):
+    pass
 
 
-class Button(PageElement): pass
+class Button(PageElement):
+    pass
 
 
-class Link(PageElement): pass
+class Link(PageElement):
+    pass
 
 
 class Select(PageElement):
@@ -30,9 +32,13 @@ class Select(PageElement):
         if value is not None:
             value = str(value)
             if len(value) > 0:
-                WebDriverWait(instance.webdriver, self.TIMEOUT).until(
-                    lambda d: self.find(d).find_element_by_xpath("./option[text()='%s']" % value),
-                    "Didn\'t find option by text='%s'." % value).click()
+                element = self.__get__(instance, instance.__class__)
+                for option in element.find_elements_by_tag_name("option"):
+                    if option.text.strip() == value:
+                        if not element.is_selected():
+                            element.click()
+                        return
+                raise PageElementError("""Select("%s") has no option with text "%s" """ % (self._locator[1], value))
 
 
 class Textbox(PageElement):
@@ -40,4 +46,7 @@ class Textbox(PageElement):
         if value is not None:
             value = str(value)
             if len(value) > 0:
-                self.__get__(instance, instance.__class__).send_keys(value)
+                element = self.__get__(instance, instance.__class__)
+                if element.text.strip() != value:
+                    element.send_keys(value)
+
