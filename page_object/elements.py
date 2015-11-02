@@ -2,6 +2,9 @@
 
 from page_object import PageElement, PageElementError
 
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+
 
 class CheckableElement(PageElement):
     def __set__(self, instance, value):
@@ -9,6 +12,13 @@ class CheckableElement(PageElement):
             element = self.__get__(instance, instance.__class__)
             if (value and not element.is_selected()) or (not value and element.is_selected()):
                 element.click()
+
+
+class Clickable(PageElement):
+    def __get__(self, instance, owner):
+        return WebDriverWait(instance.webdriver, PageElement.TIMEOUT).until(
+            expected_conditions.element_to_be_clickable(self._locator),
+            'Didn\'t find element by %s="%s" or element is not clickable.' % self._locator)
 
 
 class Checkbox(CheckableElement):
@@ -19,11 +29,11 @@ class Radio(CheckableElement):
     pass
 
 
-class Button(PageElement):
+class Button(Clickable):
     pass
 
 
-class Link(PageElement):
+class Link(Clickable):
     pass
 
 
