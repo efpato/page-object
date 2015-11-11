@@ -1,5 +1,7 @@
 # -*- coding: -utf-8 -*-
 
+import logging
+
 from page_object import PageElement, PageElementError
 
 from selenium.webdriver.support.wait import WebDriverWait
@@ -11,14 +13,16 @@ class CheckableElement(PageElement):
         if value is not None:
             element = self.__get__(instance, instance.__class__)
             if (value and not element.is_selected()) or (not value and element.is_selected()):
+                logging.info("Click checkable element by %s: <%s>" % self._locator)
                 element.click()
 
 
 class Clickable(PageElement):
     def __get__(self, instance, owner):
+        logging.info("Find clickable element by %s: <%s>" % self._locator)
         return WebDriverWait(instance.webdriver, PageElement.TIMEOUT).until(
             expected_conditions.element_to_be_clickable(self._locator),
-            'Didn\'t find element by %s="%s" or element is not clickable.' % self._locator)
+            "Didn't find element by %s: <%s> or element is not clickable" % self._locator)
 
 
 class Checkbox(CheckableElement):
@@ -45,9 +49,10 @@ class Select(PageElement):
             if len(value) > 0:
                 for option in element.find_elements_by_xpath("./option"):
                     if option.text.strip() == value:
+                        logging.info("Select option '%s' for element <%s>: <%s>" % (value, self._locator[0], self._locator[1]))
                         option.click()
                         return 1
-                raise PageElementError("""Select<"%s"> has no option with text "%s" """ % (self._locator[1], value))
+                raise PageElementError("Select<%s> has no option with text '%s'" % (self._locator[1], value))
 
 
 class Textbox(PageElement):
@@ -56,5 +61,6 @@ class Textbox(PageElement):
             element = self.__get__(instance, instance.__class__)
             value = str(value)
             if len(value) > 0:
+                logging.info("Type text '%s' into element <%s>: <%s>" % (value, self._locator[0], self._locator[1]))
                 element.clear()
                 element.send_keys(value)

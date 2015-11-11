@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -32,7 +34,8 @@ class PageObject(object):
         return self.webdriver.title
 
 
-class PageElementError(Exception): pass
+class PageElementError(Exception):
+    pass
 
 
 class PageElement(object):
@@ -51,10 +54,11 @@ class PageElement(object):
     def find(self, webdriver):
         return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
             lambda d: d.find_element(*self._locator),
-            'Didn\'t find element by %s="%s".' % self._locator)
+            "Didn't find element by %s: <%s>" % self._locator)
 
     def __get__(self, instance, owner):
         try:
+            logging.info("Find element by %s: <%s>" % self._locator)
             return self.find(instance.webdriver)
         except AttributeError:
             return
@@ -69,4 +73,4 @@ class PageElements(PageElement):
     def find(self, webdriver):
         return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
             lambda d: d.find_elements(*self._locator),
-            'Didn\'t find elements by %s="%s".' % self._locator)
+            "Didn't find elements by %s: <%s>" % self._locator)
