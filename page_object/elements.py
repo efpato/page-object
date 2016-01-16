@@ -15,6 +15,7 @@ class CheckableElement(PageElement):
             if (value and not element.is_selected()) or (not value and element.is_selected()):
                 logging.info("Click checkable element by %s: <%s>" % self._locator)
                 element.click()
+                return 1
 
 
 class Clickable(PageElement):
@@ -49,7 +50,8 @@ class Select(PageElement):
             if len(value) > 0:
                 for option in element.find_elements_by_xpath("./option"):
                     if option.text.strip() == value:
-                        logging.info("Select option '%s' for element <%s>: <%s>" % (value, self._locator[0], self._locator[1]))
+                        logging.info("Select option '%s' for element <%s>: <%s>" % \
+                                     (value, self._locator[0], self._locator[1]))
                         option.click()
                         return 1
                 raise PageElementError("Select<%s> has no option with text '%s'" % (self._locator[1], value))
@@ -64,3 +66,4 @@ class Textbox(PageElement):
                 logging.info("Type text '%s' into element <%s>: <%s>" % (value, self._locator[0], self._locator[1]))
                 element.clear()
                 element.send_keys(value)
+                return 1
