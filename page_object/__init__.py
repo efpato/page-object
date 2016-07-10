@@ -23,7 +23,8 @@ class PageObject(object):
 
     def __init__(self, webdriver, root_uri=None):
         self.webdriver = webdriver
-        self.root_uri = root_uri if root_uri else getattr(webdriver, 'root_uri', None)
+        self.root_uri = root_uri if root_uri else getattr(
+            webdriver, 'root_uri', None)
 
     def get(self, uri):
         root_uri = self.root_uri or ''
@@ -58,13 +59,13 @@ class PageElement(object):
 
     def __get__(self, instance, owner):
         try:
-            logging.info("Find element by %s: <%s>" % self._locator)
+            logging.info("Find element by %s: <%s>", *self._locator)
             return self.find(instance.webdriver)
         except AttributeError:
             return
 
     def __set__(self, instance, value):
-        raise NotImplemented()
+        pass
 
 
 class PageElements(PageElement):
