@@ -55,11 +55,11 @@ class PageElement(object):
     def find(self, webdriver):
         return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
             lambda d: d.find_element(*self._locator),
-            "Didn't find element by %s: <%s>" % self._locator)
+            "Not found element by %s: <%s>" % self._locator)
 
     def __get__(self, instance, owner):
         try:
-            logging.info("Find element by %s: <%s>", *self._locator)
+            logging.info("Looking for element by %s: <%s>", *self._locator)
             return self.find(instance.webdriver)
         except AttributeError:
             return
@@ -74,4 +74,4 @@ class PageElements(PageElement):
     def find(self, webdriver):
         return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
             lambda d: d.find_elements(*self._locator),
-            "Didn't find elements by %s: <%s>" % self._locator)
+            "Not found elements by %s: <%s>" % self._locator)

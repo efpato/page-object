@@ -22,11 +22,10 @@ class CheckableElement(PageElement):
 
 class Clickable(PageElement):
     def __get__(self, instance, owner):
-        logging.info("Find clickable element by %s: <%s>", *self._locator)
         element = PageElement.__get__(self, instance, owner)
         WebDriverWait(instance.webdriver, PageElement.TIMEOUT).until(
             expected_conditions.element_to_be_clickable(self._locator),
-            "Didn't find element by %s: <%s> or element is not clickable" %
+            "Not found element by %s: <%s> or element is not clickable" %
             self._locator)
         return element
 
