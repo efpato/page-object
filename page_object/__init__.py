@@ -2,8 +2,6 @@
 
 import logging
 
-from selenium.common.exceptions import (
-    NoSuchElementException, StaleElementReferenceException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -18,8 +16,6 @@ LOCATOR_MAP = {
     'tag': By.TAG_NAME,
     'xpath': By.XPATH
 }
-
-IGNORED_EXCEPTIONS = (NoSuchElementException, StaleElementReferenceException)
 
 
 class PageObject(object):
@@ -57,8 +53,7 @@ class PageElement(object):
         self._locator = (LOCATOR_MAP[key], value)
 
     def find(self, webdriver):
-        return WebDriverWait(webdriver, PageElement.TIMEOUT,
-                             ignored_exceptions=IGNORED_EXCEPTIONS).until(
+        return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
             lambda d: d.find_element(*self._locator),
             "Not found element by %s: <%s>" % self._locator)
 
@@ -77,7 +72,6 @@ class PageElements(PageElement):
     """Like `PageElement` but returns multiple results."""
 
     def find(self, webdriver):
-        return WebDriverWait(webdriver, PageElement.TIMEOUT,
-                             ignored_exceptions=IGNORED_EXCEPTIONS).until(
+        return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
             lambda d: d.find_elements(*self._locator),
             "Not found elements by %s: <%s>" % self._locator)
