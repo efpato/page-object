@@ -3,6 +3,7 @@
 import logging
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 
@@ -19,7 +20,7 @@ LOCATOR_MAP = {
 
 
 class PageObject(object):
-    """Page Object pattern."""
+    """ Page Object pattern."""
 
     def __init__(self, webdriver, root_uri=None):
         self.webdriver = webdriver
@@ -30,6 +31,12 @@ class PageObject(object):
         root_uri = self.root_uri or ''
         self.webdriver.get(root_uri + uri)
 
+    def wait_for_page_by_title(self, title, timeout=30):
+        WebDriverWait(self.webdriver, timeout).until(
+            lambda driver: EC.title_is(title) and driver.execute_script(
+                "return document.readyState == 'complete';"),
+            'Page load time with title "%s" has expired' % title)
+
     @property
     def title(self):
         return self.webdriver.title
@@ -39,8 +46,39 @@ class PageElementError(Exception):
     pass
 
 
+class PageElementInterace(object):
+    """ Wrapper over the WebElement."""
+
+    def __init__(self, webelement, locator):
+        self._el = webelement
+        self._locator = locator
+
+    def __getattr__(self, attr):
+        return getattr(self._el, attr)
+
+    @property
+    def webelement(self):
+        return self._el
+
+    @property
+    def enabled(self):
+        return self._el.is_enabled()
+
+    @property
+    def disabled(self):
+        return not self.enabled
+
+    @property
+    def value(self):
+        return self._el.get_attribute('value')
+
+    @property
+    def visible(self):
+        return self._el.is_displayed()
+
+
 class PageElement(object):
-    """Page Element descriptor."""
+    """ Page Element descriptor."""
 
     TIMEOUT = 10
 
@@ -60,16 +98,17 @@ class PageElement(object):
     def __get__(self, instance, owner):
         try:
             logging.info("Looking for element by %s: <%s>", *self._locator)
-            return self.find(instance.webdriver)
+            return PageElementInterace(
+                self.find(instance.webdriver), self._locator)
         except AttributeError:
-            return
+            pass
 
     def __set__(self, instance, value):
         pass
 
 
 class PageElements(PageElement):
-    """Like `PageElement` but returns multiple results."""
+    """ Like `PageElement` but returns multiple results."""
 
     def find(self, webdriver):
         return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
