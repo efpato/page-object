@@ -1,14 +1,13 @@
-Page Objects for Python
-=======================
+# Page Objects for Python
 
 Selenium Page Objects for Python.
 
-#Installation
+### Installation
 ```bash
 $ python setup.py install
 ```
 
-#Quick Example
+### Quick Example
 
 ```python
 from selenium.webdriver import Firefox
@@ -38,7 +37,7 @@ driver.maximize_window()
  
 page = LoginPage(driver, 'http://localhost:8000')
 page.get('/login')
-page = page.logIn('user', 'passwd')
+page = page.logIn('username', 'passwod')
 assert "My site" in page.title, 'Fail login'
 
 driver.quit()
