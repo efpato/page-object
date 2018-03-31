@@ -3,6 +3,7 @@
 import logging
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -20,7 +21,7 @@ LOCATOR_MAP = {
 
 
 class PageObject(object):
-    """ Page Object pattern."""
+    """ Page Object pattern"""
 
     def __init__(self, webdriver, root_uri=None):
         self.webdriver = webdriver
@@ -33,7 +34,7 @@ class PageObject(object):
 
     def wait_for_page_by_title(self, title, timeout=30):
         WebDriverWait(self.webdriver, timeout).until(
-            lambda driver: EC.title_is(title) and driver.execute_script(
+            lambda d: EC.title_is(title)(d) and d.execute_script(
                 "return document.readyState == 'complete';"),
             'Page load time with title "%s" has expired' % title)
 
@@ -46,12 +47,15 @@ class PageElementError(Exception):
     pass
 
 
-class PageElementInterace(object):
-    """ Wrapper over the WebElement."""
+class PageElementWrapper(object):
+    """ Wrapper for PageElement"""
 
     def __init__(self, webelement, locator):
         self._el = webelement
         self._locator = locator
+
+    def __repr__(self):
+        return '%s(%s="%s")' % (self.__class__.__name__, *self._locator)
 
     def __getattr__(self, attr):
         return getattr(self._el, attr)
@@ -73,12 +77,37 @@ class PageElementInterace(object):
         return self._el.get_attribute('value')
 
     @property
+    def inner_html(self):
+        return self._el.get_attribute('innerHTML')
+
+    @property
     def visible(self):
         return self._el.is_displayed()
 
+    def move_to_self(self):
+        ActionChains(self._el.parent).move_to_element(self._el).perform()
+
+    def wait_for_clickability(self, timeout=10):
+        logging.info("Waiting for clickability %s ...", self)
+        self._el = WebDriverWait(self._el.parent, timeout).until(
+            EC.element_to_be_clickable(self._locator),
+            'Waiting for clickability %s has expired!' % self)
+
+    def wait_for_visibility(self, timeout=10):
+        logging.info("Waiting for visibility %s ...", self)
+        self._el = WebDriverWait(self._el.parent, timeout).until(
+            EC.visibility_of_element_located(self._locator),
+            'Waiting for visibility %s has expired!' % self)
+
+    def wait_for_invisibility(self, timeout=10):
+        logging.info("Waiting for invisibility %s ...", self)
+        self._el = WebDriverWait(self._el.parent, timeout).until(
+            EC.invisibility_of_element_located(self._locator),
+            'Waiting for invisibility %s has expired!' % self)
+
 
 class PageElement(object):
-    """ Page Element descriptor."""
+    """ PageElement descriptor"""
 
     TIMEOUT = 10
 
@@ -91,26 +120,29 @@ class PageElement(object):
         self._locator = (LOCATOR_MAP[key], value)
 
     def find(self, webdriver):
+        logging.info('Looking for element by <%s="%s">', *self._locator)
         return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
             lambda d: d.find_element(*self._locator),
-            "Not found element by %s: <%s>" % self._locator)
+            'Not found element by <%s="%s">' % self._locator)
 
     def __get__(self, instance, owner):
-        try:
-            logging.info("Looking for element by %s: <%s>", *self._locator)
-            return PageElementInterace(
-                self.find(instance.webdriver), self._locator)
-        except AttributeError:
-            pass
+        return PageElementWrapper(self.find(instance.webdriver), self._locator)
 
     def __set__(self, instance, value):
         pass
 
 
 class PageElements(PageElement):
-    """ Like `PageElement` but returns multiple results."""
+    """ Like `PageElement` but returns multiple results"""
 
     def find(self, webdriver):
+        logging.info('Looking for elements by <%s="%s">', *self._locator)
         return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
             lambda d: d.find_elements(*self._locator),
-            "Not found elements by %s: <%s>" % self._locator)
+            'Not found elements by <%s="%s">' % self._locator)
+
+    def __get__(self, instance, owner):
+        ret = []
+        for webelement in self.find(instance.webdriver):
+            ret.append(PageElementWrapper(webelement, self._locator))
+        return ret

@@ -9,13 +9,14 @@ except ImportError:
 
 setup(
     name='page-object',
-    version='1.1.0',
+    version='2.0.0',
     url='https://github.com/efpato/page-object',
     author='Sergey Demenok',
     author_email='sergey.demenok@gmail.com',
     description='Page Objects for Python',
     packages=[
         'page_object',
-        'page_object.jquery'
+        'page_object.ui',
+        'page_object.ui.jquery'
     ]
 )
