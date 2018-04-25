@@ -18,7 +18,7 @@ class ButtonWrapper(PageElementWrapper):
         self._el.parent.execute_script(
             """
             $("{}").click();
-            """, self._locator[1])
+            """.format(self._locator[1]))
 
 
 class Button(PageElement):
