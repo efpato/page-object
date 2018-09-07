@@ -121,7 +121,7 @@ class PageElement(object):
 
     def find(self, webdriver):
         logging.info('Looking for element by <%s="%s">', *self._locator)
-        return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
+        return WebDriverWait(webdriver, self.TIMEOUT).until(
             lambda d: d.find_element(*self._locator),
             'Not found element by <%s="%s">' % self._locator)
 
@@ -135,9 +135,11 @@ class PageElement(object):
 class PageElements(PageElement):
     """ Like `PageElement` but returns multiple results"""
 
+    TIMEOUT = 10
+
     def find(self, webdriver):
         logging.info('Looking for elements by <%s="%s">', *self._locator)
-        return WebDriverWait(webdriver, PageElement.TIMEOUT).until(
+        return WebDriverWait(webdriver, self.TIMEOUT).until(
             lambda d: d.find_elements(*self._locator),
             'Not found elements by <%s="%s">' % self._locator)
 
