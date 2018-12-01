@@ -14,12 +14,19 @@ class TextboxWrapper(PageElementWrapper):
         return self._el.parent.execute_script(
             'return $("{}").val();'.format(self._locator[1]))
 
-    def enter_text(self, text):
-        logging.info("%s entering text ...", self)
+    def enter_text(self, value):
+        logging.info("%s entering text `%s` ...", self, value)
         self._el.parent.execute_script(
             """
             $("{0}").val("{1}").change();
-            """.format(self._locator[1], text))
+            """.format(self._locator[1], value))
+
+    def enter_number(self, value):
+        logging.info("%s entering number `%s` ...", self, value)
+        self._el.parent.execute_script(
+            """
+            $("{0}").val({1}).change();
+            """.format(self._locator[1], value))
 
 
 class Textbox(PageElement):
