@@ -9,11 +9,14 @@ except ImportError:
 
 setup(
     name='page-object',
-    version='1.0.7',
+    version='2.0.1',
     url='https://github.com/efpato/page-object',
     author='Sergey Demenok',
     author_email='sergey.demenok@gmail.com',
     description='Page Objects for Python',
-    packages=['page_object'],
-    install_requires=['selenium']
+    packages=[
+        'page_object',
+        'page_object.ui',
+        'page_object.ui.jquery'
+    ]
 )

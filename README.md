@@ -13,7 +13,7 @@ $ python setup.py install
 from selenium.webdriver import Firefox
 
 from page_object import PageObject
-from page_object.elements import Link, Button, Textbox
+from page_object.ui import Link, Button, Textbox
  
 
 class HomePage(PageObject):
@@ -32,13 +32,14 @@ class LoginPage(PageObject):
         return HomePage(self.webdriver)
 
 
-driver = Firefox()
-driver.maximize_window()
- 
-page = LoginPage(driver, 'http://localhost:8000')
-page.get('/login')
-page = page.logIn('username', 'passwod')
-assert "My site" in page.title, 'Fail login'
+try:
+    driver = Firefox()
+    driver.maximize_window()
 
-driver.quit()
+    page = LoginPage(driver, 'http://localhost:8000')
+    page.get('/login')
+    page = page.logIn('user', 'passwd')
+    assert "My site" in page.title, 'Fail login'
+finally:
+    driver.quit()
 ```
