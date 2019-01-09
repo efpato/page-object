@@ -35,7 +35,7 @@ class LoginPage(PageObject):
 try:
     driver = Firefox()
     driver.maximize_window()
- 
+
     page = LoginPage(driver, 'http://localhost:8000')
     page.get('/login')
     page = page.logIn('user', 'passwd')
