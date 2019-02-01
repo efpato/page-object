@@ -22,7 +22,9 @@ class Button(PageElement):
     """ Button descriptor"""
 
     def __get__(self, instance, owner):
-        return ButtonWrapper(self.find(instance.webdriver), self._locator)
+        el = ButtonWrapper(self.find(instance.webdriver), self._locator)
+        el.move_to_self()
+        return el
 
 
 Link = Button

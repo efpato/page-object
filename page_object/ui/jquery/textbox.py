@@ -33,7 +33,9 @@ class Textbox(PageElement):
     """ Textbox descriptor"""
 
     def __get__(self, instance, owner):
-        return TextboxWrapper(self.find(instance.webdriver), self._locator)
+        el = TextboxWrapper(self.find(instance.webdriver), self._locator)
+        el.move_to_self()
+        return el
 
     def __set__(self, instance, value):
         if value is None:

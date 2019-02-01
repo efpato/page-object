@@ -41,7 +41,9 @@ class Checkbox(PageElement):
     """ Checkbox descriptor"""
 
     def __get__(self, instance, owner):
-        return CheckboxWrapper(self.find(instance.webdriver), self._locator)
+        el = CheckboxWrapper(self.find(instance.webdriver), self._locator)
+        el.move_to_self()
+        return el
 
     def __set__(self, instance, value):
         if value is None:

@@ -126,7 +126,9 @@ class PageElement(object):
             'Not found element by <%s="%s">' % self._locator)
 
     def __get__(self, instance, owner):
-        return PageElementWrapper(self.find(instance.webdriver), self._locator)
+        el = PageElementWrapper(self.find(instance.webdriver), self._locator)
+        el.move_to_self()
+        return el
 
     def __set__(self, instance, value):
         pass

@@ -47,7 +47,9 @@ class SelectWrapper(PageElementWrapper):
 
 class Select(PageElement):
     def __get__(self, instance, owner):
-        return SelectWrapper(self.find(instance.webdriver), self._locator)
+        el = SelectWrapper(self.find(instance.webdriver), self._locator)
+        el.move_to_self()
+        return el
 
     def __set__(self, instance, value):
         if value is None:

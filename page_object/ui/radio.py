@@ -26,4 +26,6 @@ class Radio(PageElement):
     """ Radio descriptor"""
 
     def __get__(self, instance, owner):
-        return RadioWrapper(self.find(instance.webdriver), self._locator)
+        el = RadioWrapper(self.find(instance.webdriver), self._locator)
+        el.move_to_self()
+        return el
