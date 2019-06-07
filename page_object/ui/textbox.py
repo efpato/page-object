@@ -6,6 +6,8 @@ from page_object import PageElement, PageElementWrapper
 
 __all__ = ['Textbox', 'TextboxWrapper']
 
+logger = logging.getLogger(__name__)
+
 
 class TextboxWrapper(PageElementWrapper):
     """ Wrapper for <input type="text">"""
@@ -15,11 +17,11 @@ class TextboxWrapper(PageElementWrapper):
             self.wait_for_clickability(timeout)
 
         if clear:
-            logging.info("%s cleaning ...", self)
-            self._el.clear()
+            logger.info("%r cleaning ...", self)
+            self.clear()
 
-        logging.info("%s entering text ...", self)
-        self._el.send_keys(text)
+        logger.info("%r entering text ...", self)
+        self.send_keys(text)
 
 
 class Textbox(PageElement):

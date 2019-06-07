@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name='page-object',
-    version='2.0.2',
+    version='2.0.3',
     url='https://github.com/efpato/page-object',
     author='Sergey Demenok',
     author_email='sergey.demenok@gmail.com',

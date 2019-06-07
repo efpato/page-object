@@ -6,6 +6,8 @@ from page_object import PageElement, PageElementWrapper
 
 __all__ = ['Button', 'ButtonWrapper', 'Link']
 
+logger = logging.getLogger(__name__)
+
 
 class ButtonWrapper(PageElementWrapper):
     """ Wrapper for <input type="button">"""
@@ -14,7 +16,7 @@ class ButtonWrapper(PageElementWrapper):
         if timeout:
             self.wait_for_clickability(timeout)
 
-        logging.info("%s clicking ...", self)
+        logger.info("%r clicking ...", self)
         self._el.parent.execute_script(
             """
             $("{}").click();

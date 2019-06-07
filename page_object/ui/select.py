@@ -6,16 +6,20 @@ from page_object import PageElement, PageElementError, PageElementWrapper
 
 __all__ = ['Select', 'SelectWrapper']
 
+logger = logging.getLogger(__name__)
+
 
 class SelectWrapper(PageElementWrapper):
     """ Wrapper for <select>"""
 
     @property
     def options(self):
+        logger.info("%r getting options ...", self)
         return self._el.find_elements_by_tag_name('option')
 
     @property
     def text(self):
+        logger.info("%r getting text ...", self)
         ret = None
         for option in self.options:
             if option.is_selected():
@@ -24,6 +28,7 @@ class SelectWrapper(PageElementWrapper):
 
     @property
     def value(self):
+        logger.info("%r getting value ...", self)
         ret = None
         for option in self.options:
             if option.is_selected():
@@ -31,21 +36,21 @@ class SelectWrapper(PageElementWrapper):
         return ret
 
     def select_by_text(self, text):
-        logging.info('%s selecting by text "%s" ...', self, text)
+        logger.info('%r selecting by text "%s" ...', self, text)
         for option in self.options:
             if option.text.strip() == text:
                 option.click()
                 return
-        raise PageElementError('%s has no option with text "%s"' % (
+        raise PageElementError('%r has no option with text "%s"' % (
             self, text))
 
     def select_by_value(self, value):
-        logging.info('%s selecting by value "%s" ...', self, value)
+        logger.info('%r selecting by value "%s" ...', self, value)
         for option in self.options:
             if option.get_attribute('value') == value:
                 option.click()
                 return
-        raise PageElementError('%s has no option with value "%s"' % (
+        raise PageElementError('%r has no option with value "%s"' % (
             self, value))
 
 

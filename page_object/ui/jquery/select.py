@@ -6,14 +6,18 @@ from page_object import PageElement, PageElementWrapper
 
 __all__ = ['Select', 'SelectWrapper']
 
+logger = logging.getLogger(__name__)
+
 
 class SelectWrapper(PageElementWrapper):
     @property
     def options(self):
+        logger.info("%r getting options ...", self)
         return self._el.find_elements_by_tag_name('option')
 
     @property
     def text(self):
+        logger.info("%r getting text ...", self)
         return self._el.parent.execute_script(
             """
             return $("{} :selected").text();
@@ -21,13 +25,14 @@ class SelectWrapper(PageElementWrapper):
 
     @property
     def value(self):
+        logger.info("%r getting value ...", self)
         return self._el.parent.execute_script(
             """
             return $("{}").val();
             """.format(self._locator[1]))
 
     def select_by_text(self, text):
-        logging.info('%s selecting by text "%s" ...', self, text)
+        logger.info('%r selecting by text "%s" ...', self, text)
         self._el.parent.execute_script(
             """
             return $("{0} option").filter(function () {{
@@ -36,7 +41,7 @@ class SelectWrapper(PageElementWrapper):
             """.format(self._locator[1], text))
 
     def select_by_value(self, value):
-        logging.info('%s selecting by value "%s" ...', self, value)
+        logger.info('%r selecting by value "%s" ...', self, value)
         self._el.parent.execute_script(
             """
             return $("{0} [value='{1}']")

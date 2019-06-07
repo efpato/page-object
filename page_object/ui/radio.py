@@ -6,20 +6,23 @@ from page_object import PageElement, PageElementWrapper
 
 __all__ = ['Radio', 'RadioWrapper']
 
+logger = logging.getLogger(__name__)
+
 
 class RadioWrapper(PageElementWrapper):
     """ Wrapper for <input type="radio">"""
 
     @property
     def checked(self):
-        return self._el.is_selected()
+        logger.info("%r is checked ...", self)
+        return self.is_selected()
 
     def click(self, timeout=0):
         if timeout:
             self.wait_for_clickability(timeout)
 
-        logging.info("%s clicking ...", self)
-        self._el.click()
+        logger.info("%r clicking ...", self)
+        self.click()
 
 
 class Radio(PageElement):

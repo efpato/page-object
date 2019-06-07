@@ -6,35 +6,38 @@ from page_object import PageElement, PageElementWrapper
 
 __all__ = ['Checkbox', 'CheckboxWrapper']
 
+logger = logging.getLogger(__name__)
+
 
 class CheckboxWrapper(PageElementWrapper):
     """ Wrapper for <input type="checkbox">"""
 
     @property
     def checked(self):
-        return self._el.is_selected()
+        logger.info("%r is checked ...", self)
+        return self.is_selected()
 
     def check(self, timeout=0):
         if self.checked:
-            logging.info("%s is already checked", self)
+            logging.info("%r is already checked", self)
             return
 
         if timeout:
             self.wait_for_clickability(timeout)
 
-        logging.info("%s clicking ...", self)
-        self._el.click()
+        logger.info("%r clicking ...", self)
+        self.click()
 
     def uncheck(self, timeout):
         if not self.checked:
-            logging.info("%s is already unchecked", self)
+            logging.info("%r is already unchecked", self)
             return
 
         if timeout:
             self.wait_for_clickability(timeout)
 
-        logging.info("%s clicking ...", self)
-        self._el.click()
+        logger.info("%r clicking ...", self)
+        self.click()
 
 
 class Checkbox(PageElement):
