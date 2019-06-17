@@ -3,6 +3,7 @@
 import logging
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -96,9 +97,7 @@ class PageElementWrapper(object):
 
     def move_to_self(self):
         logger.info("%r moving to element ...", self)
-        self._el.parent.execute_script(
-            "return arguments[0].scrollIntoView();",
-            self._el)
+        ActionChains(self._el.parent).move_to_element(self._el).perform()
 
     def wait_for_clickability(self, timeout=10):
         logger.info("Waiting for clickability %r ...", self)
