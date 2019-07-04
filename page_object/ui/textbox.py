@@ -6,6 +6,8 @@ from page_object import PageElement, PageElementWrapper
 
 __all__ = ['Textbox', 'TextboxWrapper']
 
+logger = logging.getLogger(__name__)
+
 
 class TextboxWrapper(PageElementWrapper):
     """ Wrapper for <input type="text">"""
@@ -15,18 +17,20 @@ class TextboxWrapper(PageElementWrapper):
             self.wait_for_clickability(timeout)
 
         if clear:
-            logging.info("%s cleaning ...", self)
-            self._el.clear()
+            logger.info("%r cleaning ...", self)
+            self.clear()
 
-        logging.info("%s entering text ...", self)
-        self._el.send_keys(text)
+        logger.info("%r entering text ...", self)
+        self.send_keys(text)
 
 
 class Textbox(PageElement):
     """ Textbox descriptor"""
 
     def __get__(self, instance, owner):
-        return TextboxWrapper(self.find(instance.webdriver), self._locator)
+        el = TextboxWrapper(self.find(instance.webdriver), self._locator)
+        el.move_to_self()
+        return el
 
     def __set__(self, instance, value):
         if value is None:
