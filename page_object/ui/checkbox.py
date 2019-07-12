@@ -15,7 +15,7 @@ class CheckboxWrapper(PageElementWrapper):
     @property
     def checked(self):
         logger.info("%r is checked ...", self)
-        return self.is_selected()
+        return self._el.is_selected()
 
     def check(self, timeout=0):
         if self.checked:
@@ -26,9 +26,9 @@ class CheckboxWrapper(PageElementWrapper):
             self.wait_for_clickability(timeout)
 
         logger.info("%r clicking ...", self)
-        self.click()
+        self._el.click()
 
-    def uncheck(self, timeout):
+    def uncheck(self, timeout=0):
         if not self.checked:
             logging.info("%r is already unchecked", self)
             return
@@ -37,7 +37,7 @@ class CheckboxWrapper(PageElementWrapper):
             self.wait_for_clickability(timeout)
 
         logger.info("%r clicking ...", self)
-        self.click()
+        self._el.click()
 
 
 class Checkbox(PageElement):
