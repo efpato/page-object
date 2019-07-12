@@ -15,14 +15,14 @@ class RadioWrapper(PageElementWrapper):
     @property
     def checked(self):
         logger.info("%r is checked ...", self)
-        return self.is_selected()
+        return self._el.is_selected()
 
     def click(self, timeout=0):
         if timeout:
             self.wait_for_clickability(timeout)
 
         logger.info("%r clicking ...", self)
-        self.click()
+        self._el.click()
 
 
 class Radio(PageElement):

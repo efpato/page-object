@@ -18,10 +18,10 @@ class TextboxWrapper(PageElementWrapper):
 
         if clear:
             logger.info("%r cleaning ...", self)
-            self.clear()
+            self._el.clear()
 
         logger.info("%r entering text ...", self)
-        self.send_keys(text)
+        self._el.send_keys(text)
 
 
 class Textbox(PageElement):
