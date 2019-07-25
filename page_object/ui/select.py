@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 class SelectWrapper(PageElementWrapper):
     """ Wrapper for <select>"""
-
     @property
     def options(self):
         logger.info("%r getting options ...", self)
@@ -41,8 +40,8 @@ class SelectWrapper(PageElementWrapper):
             if option.text.strip() == text:
                 option.click()
                 return
-        raise PageElementError('%r has no option with text "%s"' % (
-            self, text))
+        raise PageElementError('%r has no option with text "%s"' %
+                               (self, text))
 
     def select_by_value(self, value):
         logger.info('%r selecting by value "%s" ...', self, value)
@@ -50,17 +49,14 @@ class SelectWrapper(PageElementWrapper):
             if option.get_attribute('value') == value:
                 option.click()
                 return
-        raise PageElementError('%r has no option with value "%s"' % (
-            self, value))
+        raise PageElementError('%r has no option with value "%s"' %
+                               (self, value))
 
 
 class Select(PageElement):
     """ Select descriptor"""
-
     def __get__(self, instance, owner):
-        el = SelectWrapper(self.find(instance.webdriver), self._locator)
-        el.move_to_self()
-        return el
+        return SelectWrapper(self.find(instance.webdriver), self._locator)
 
     def __set__(self, instance, value):
         if value is None:

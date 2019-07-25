@@ -3,10 +3,8 @@
 import logging
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
 
 LOCATOR_MAP = {
     'class_name': By.CLASS_NAME,
@@ -24,7 +22,6 @@ logger = logging.getLogger(__name__)
 
 class PageObject(object):
     """ Page Object pattern"""
-
     def __init__(self, webdriver, root_uri=None):
         logger.info("Creating %s ...", self.__class__.__name__)
         self.webdriver = webdriver
@@ -37,8 +34,8 @@ class PageObject(object):
         self.webdriver.get(root_uri + uri)
 
     def wait_for_page_by_title(self, title, timeout=30):
-        logger.info("Waiting for page title `%s` [timeout=%d] ...",
-                    title, timeout)
+        logger.info("Waiting for page title `%s` [timeout=%d] ...", title,
+                    timeout)
         WebDriverWait(self.webdriver, timeout).until(
             lambda d: EC.title_is(title)(d) and d.execute_script(
                 "return document.readyState == 'complete';"),
@@ -55,7 +52,6 @@ class PageElementError(Exception):
 
 class PageElementWrapper(object):
     """ Wrapper for PageElement"""
-
     def __init__(self, webelement, locator):
         self._el = webelement
         self._locator = locator
@@ -77,7 +73,6 @@ class PageElementWrapper(object):
 
     @property
     def disabled(self):
-        logger.info("%r is disabled ...", self)
         return not self.enabled
 
     @property
@@ -94,10 +89,6 @@ class PageElementWrapper(object):
     def visible(self):
         logger.info("%r is visible ...", self)
         return self._el.is_displayed()
-
-    def move_to_self(self):
-        logger.info("%r moving to element ...", self)
-        ActionChains(self._el.parent).move_to_element(self._el).perform()
 
     def wait_for_clickability(self, timeout=10):
         logger.info("Waiting for clickability %r ...", self)
@@ -128,7 +119,11 @@ class PageElement(object):
             raise ValueError("Please specify a locator")
         if len(locator) > 1:
             raise ValueError("Please specify only one locator")
-        key, value = next(iter(locator.items()))
+
+        key, value = locator.popitem()
+        if key not in LOCATOR_MAP:
+            raise ValueError("Incorrect locator")
+
         self._locator = (LOCATOR_MAP[key], value)
 
     def find(self, webdriver):
@@ -138,9 +133,7 @@ class PageElement(object):
             'Not found element by <%s="%s">' % self._locator)
 
     def __get__(self, instance, owner):
-        el = PageElementWrapper(self.find(instance.webdriver), self._locator)
-        el.move_to_self()
-        return el
+        return PageElementWrapper(self.find(instance.webdriver), self._locator)
 
     def __set__(self, instance, value):
         pass
@@ -158,7 +151,7 @@ class PageElements(PageElement):
             'Not found elements by <%s="%s">' % self._locator)
 
     def __get__(self, instance, owner):
-        ret = []
-        for webelement in self.find(instance.webdriver):
-            ret.append(PageElementWrapper(webelement, self._locator))
-        return ret
+        return [
+            PageElementWrapper(webelement, self._locator)
+            for webelement in self.find(instance.webdriver)
+        ]

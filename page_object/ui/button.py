@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 class ButtonWrapper(PageElementWrapper):
     """ Wrapper for <input type="button">"""
-
     def click(self, timeout=0):
         if timeout:
             self.wait_for_clickability(timeout)
@@ -22,11 +21,8 @@ class ButtonWrapper(PageElementWrapper):
 
 class Button(PageElement):
     """ Button descriptor"""
-
     def __get__(self, instance, owner):
-        el = ButtonWrapper(self.find(instance.webdriver), self._locator)
-        el.move_to_self()
-        return el
+        return ButtonWrapper(self.find(instance.webdriver), self._locator)
 
 
 Link = Button

@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 class RadioWrapper(PageElementWrapper):
     """ Wrapper for <input type="radio">"""
-
     @property
     def checked(self):
         logger.info("%r is checked ...", self)
@@ -27,8 +26,5 @@ class RadioWrapper(PageElementWrapper):
 
 class Radio(PageElement):
     """ Radio descriptor"""
-
     def __get__(self, instance, owner):
-        el = RadioWrapper(self.find(instance.webdriver), self._locator)
-        el.move_to_self()
-        return el
+        return RadioWrapper(self.find(instance.webdriver), self._locator)

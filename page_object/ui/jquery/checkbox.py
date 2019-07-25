@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 class CheckboxWrapper(PageElementWrapper):
     """ Wrapper for <input type="checkbox">"""
-
     @property
     def checked(self):
         logger.info("%r is checked ...", self)
@@ -33,11 +32,8 @@ class CheckboxWrapper(PageElementWrapper):
 
 class Checkbox(PageElement):
     """ Checkbox descriptor"""
-
     def __get__(self, instance, owner):
-        el = CheckboxWrapper(self.find(instance.webdriver), self._locator)
-        el.move_to_self()
-        return el
+        return CheckboxWrapper(self.find(instance.webdriver), self._locator)
 
     def __set__(self, instance, value):
         if value is None:

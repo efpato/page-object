@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 class TextboxWrapper(PageElementWrapper):
     """ Wrapper for <input type="text">"""
-
     def enter_text(self, text, timeout=0, clear=True):
         if timeout:
             self.wait_for_clickability(timeout)
@@ -26,11 +25,8 @@ class TextboxWrapper(PageElementWrapper):
 
 class Textbox(PageElement):
     """ Textbox descriptor"""
-
     def __get__(self, instance, owner):
-        el = TextboxWrapper(self.find(instance.webdriver), self._locator)
-        el.move_to_self()
-        return el
+        return TextboxWrapper(self.find(instance.webdriver), self._locator)
 
     def __set__(self, instance, value):
         if value is None:
